@@ -1,0 +1,136 @@
+<div class="flex-column flex-auto gap-md">
+    <div class="flex-row title-bar">
+        <span class="m-r-auto">사용자 관리</span>
+        <Button @click="load" icon="pi pi-refresh" class="p-button-lg p-button-rounded p-button-secondary p-button-text" />
+    </div>
+    <div class="flex-row search-bar gap-md">
+        <Button label="사용자 추가" icon="pi pi-plus" @click="openAddDialog"/>
+        <div class="flex-row gap-sm m-l-auto">
+            <Checkbox id="deleted" v-model="condition.suspendedOrDeleted" :binary="true"/>
+            <label for="deleted">사용정지, 삭제</label>
+        </div>
+        <Dropdown v-model="condition.type" :options="typeList" optionLabel="label" option-value="value"
+                  placeholder="사용자 구분"/>
+        <Dropdown v-model="condition.searchType" :options="keywordTypeList" optionLabel="label"
+                  option-value="value"/>
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"/>
+            <InputText type="text" v-model="condition.keyword" placeholder="Search"/>
+        </span>
+        <Button label="검색" icon="pi pi-search" @click="load"/>
+    </div>
+    <DataTable ref="dataTable"
+               :value="list"
+               :totalRecords="totalRecords"
+               :loading="loading"
+               @page="onPage($event)"
+               :lazy="true"
+               :paginator="true"
+               :rows="condition.limit"
+               paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+               :rowsPerPageOptions="[10,20,50]"
+               responsiveLayout="scroll"
+               currentPageReportTemplate="{totalRecords} 개">
+        <Column field="number" header="No."></Column>
+        <Column field="id" header="ID"></Column>
+        <Column field="name" header="이름"></Column>
+        <Column field="department" header="소속"></Column>
+        <Column header="구분">
+            <template #body="slotProps">
+                <span>{{ slotProps.data.type === 'internal' ? '내부' : '외부' }}</span>
+            </template>
+        </Column>
+        <Column field="created" header="가입일"></Column>
+        <Column header="관리">
+            <template #body="slotProps">
+                <i class="las la-ellipsis-h" @click="toggleMenu($event, slotProps.data)"></i>
+            </template>
+        </Column>
+    </DataTable>
+    <TieredMenu id="menu" ref="menu" :model="menuItems" :popup="true"/>
+</div>
+<ConfirmDialog></ConfirmDialog>
+<Dialog header="사용자" :visible="displayDialog" :style="{width: '50vw'}">
+    <div class="flex-column gap-md">
+        <div class="flex-row p-jc-end gap-sm">
+            <span class="mandatory-star">*</span>
+            <span>필수입력</span>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span class="mandatory-star">*</span>
+                <span>이름</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <InputText type="text" v-model="user.name" class="flex-auto" autofocus/>
+                <small class="p-error" v-if="inputError.name.empty">이름을 입력하세요.</small>
+                <small class="p-error" v-if="inputError.name.tooLong">이름을 20자 이하로 입력하세요.</small>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span class="mandatory-star">*</span>
+                <span>소속</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <InputText type="text" v-model="user.department" class="flex-auto"/>
+                <small class="p-error" v-if="inputError.department.empty">소속을 입력하세요.</small>
+                <small class="p-error" v-if="inputError.department.tooLong">소속을 20자 이하로 입력하세요.</small>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span class="mandatory-star">*</span>
+                <span>구분</span>
+            </div>
+            <div class="flex-row gap-sm">
+                <div class="flex-row gap-sm">
+                    <RadioButton id="internal" name="internal" value="internal" v-model="user.type"/>
+                    <label for="internal">내부</label>
+
+                    <RadioButton id="external" name="external" value="external" v-model="user.type"/>
+                    <label for="external">외부</label>
+                </div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span class="mandatory-star">*</span>
+                <span>ID</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <InputText type="text" v-model="user.id" class="flex-auto" v-if="dialogMode === 'add'"/>
+                <InputText type="text" v-model="user.id" class="flex-auto" disabled v-else/>
+                <small class="p-error" v-if="inputError.id.empty">ID를 입력하세요.</small>
+                <small class="p-error" v-if="inputError.id.tooLong">ID를 20자 이하로 입력하세요.</small>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span class="mandatory-star">*</span>
+                <span>비밀번호</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <Password v-model="user.password" class="flex-auto" :feedback="false"/>
+                <small class="p-error" v-if="inputError.password.empty">비밀번호를 입력하세요.</small>
+                <small class="p-error" v-if="inputError.password.tooLong">비밀번호를 20자 이하로 입력하세요.</small>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span class="mandatory-star">*</span>
+                <span>비밀번호 확인</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <Password v-model="confirmedPassword" class="flex-auto" :feedback="false"/>
+                <small class="p-error" v-if="inputError.confirmedPassword.empty">비밀번호 확인을 입력하세요.</small>
+                <small class="p-error" v-if="inputError.confirmedPassword.tooLong">비밀번호 확인을 20자 이하로 입력하세요.</small>
+                <small class="p-error" v-if="inputError.confirmedPassword.mismatch">비밀번호가 일치하지 않습니다.</small>
+            </div>
+        </div>
+    </div>
+    <template #footer>
+        <Button label="취소" icon="pi pi-times" @click="close" class="p-button-text"/>
+        <Button label="저장" icon="pi pi-check" @click="requestSave" autofocus/>
+    </template>
+</Dialog>

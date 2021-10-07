@@ -1,0 +1,105 @@
+<div class="flex-column flex-auto gap-md">
+    <div class="flex-row title-bar">
+        <span>공지 사항</span>
+        <i class="las la-sync m-l-auto"></i>
+    </div>
+    <div class="flex-row search-bar gap-sm">
+        <Button label="공지사항 등록" icon="pi pi-plus" @click="openAddDialog"/>
+        <span class="p-input-icon-left m-l-auto">
+            <i class="pi pi-search"/>
+            <InputText type="text" v-model="condition.keyword" placeholder="Search"/>
+        </span>
+    </div>
+    <DataTable ref="dataTable"
+               :value="list"
+               :totalRecords="totalRecords"
+               :loading="loading"
+               @page="onPage($event)"
+               :lazy="true"
+               :paginator="true"
+               :rows="condition.limit"
+               v-model:selection="selectedRow"
+               selectionMode="single"
+               dataKey="id"
+               @rowSelect="onRowSelect"
+               paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+               :rowsPerPageOptions="[10,20,50]"
+               responsiveLayout="scroll"
+               currentPageReportTemplate="{totalRecords} 개">
+        <Column field="number" header="No."></Column>
+        <Column field="title" header="제목"></Column>
+        <Column field="registered" header="등록일"></Column>
+        <Column field="readCount" header="조회"></Column>
+    </DataTable>
+</div>
+<ConfirmDialog></ConfirmDialog>
+<Dialog header="공지사항" v-model:visible="displayDialog" :style="{width: '50vw'}" :modal="true">
+    <div class="flex-column gap-md">
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span>제목</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <InputText type="text" v-model="notice.title" class="flex-auto"/>
+                <small class="p-error" v-if="inputError.title.empty">이름을 입력하세요.</small>
+                <small class="p-error" v-if="inputError.title.tooLong">이름을 100자 이하로 입력하세요.</small>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span>첨부 파일</span>
+            </div>
+            <div class="flex-column gap-sm">
+                <input type="file" ref="file" class="flex-auto"/>
+                <a :href="'/api/notice/download/' + notice.id">
+                    <span v-if="dialogMode === 'update' && notice.attachmentName">{{notice.attachmentName}}</span>
+                </a>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-column flex-auto">
+                <Editor v-model="notice.content" editorStyle="height: 320px" class="flex-auto">
+                    <template #toolbar>
+                        <span class="ql-formats">
+                            <select class="ql-header" defaultValue="0">
+                                <option value="1">Heading</option>
+                                <option value="2">Subheading</option>
+                                <option value="0">Normal</option>
+                            </select>
+                            <select class="ql-font">
+                                <option></option>
+                                <option value="serif"></option>
+                                <option value="monospace"></option>
+                            </select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-bold" type="button"></button>
+                            <button class="ql-italic" type="button"></button>
+                            <button class="ql-underline" type="button"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <select class="ql-color"></select>
+                            <select class="ql-background"></select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-list" value="ordered" type="button"></button>
+                            <button class="ql-list" value="bullet" type="button"></button>
+                            <select class="ql-align">
+                                <option defaultValue></option>
+                                <option value="center"></option>
+                                <option value="right"></option>
+                                <option value="justify"></option>
+                            </select>
+                        </span>
+                    </template>
+                </Editor>
+                <small class="p-error" v-if="inputError.content.empty">내용을 입력하세요.</small>
+                <small class="p-error" v-if="inputError.content.tooLong">내용을 2000자 이하로 입력하세요.</small>
+            </div>
+        </div>
+    </div>
+    <template #footer>
+        <Button label="취소" icon="pi pi-times" @click="close" class="p-button-text"/>
+        <Button label="저장" icon="pi pi-check" @click="requestSave()" autofocus/>
+    </template>
+</Dialog>

@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+.flex-auto {
+  flex: auto;
+}
+
+.flex-none {
+  flex: none;
+}
+
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+.flex-row-auto {
+  display: flex;
+  flex: auto;
+}
+
+.flex-row-none {
+  display: flex;
+  flex: none;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-column-auto {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+.flex-column-none {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+}

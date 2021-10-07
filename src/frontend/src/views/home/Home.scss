@@ -1,0 +1,347 @@
+$left-side-width: 280px;
+
+.ai-stretch {
+  align-items: stretch;
+}
+
+.header {
+  background-color: white;
+  color: var(--bluegray-900);
+  padding: 10px;
+  border-bottom: 3px solid $the-color;
+
+  .top-bar {
+    padding: 0 $spacing-md;
+
+    .p-dropdown {
+      background-color: $the-color;
+      //border: none;
+      border-radius: 19px;
+      padding: 0px 10px;
+      width: 150px;
+
+      &.p-focus {
+        box-shadow: none;
+        background-color: rgba(0, 0, 0, .2) !important;
+      }
+
+      &:hover {
+        background-color: transparentize($the-color, 0.2);
+      }
+
+      &:focus {
+        background-color: rgba(0, 0, 0, .2);
+      }
+
+      .p-dropdown-label.p-placeholder {
+        color: white;
+        font-size: $font-size-lg;
+      }
+
+      .p-dropdown-trigger {
+        color: white;
+      }
+    }
+
+    .search {
+      margin-left: $spacing-md;
+
+      i {
+        position: relative!important;
+      }
+
+      .p-inputtext {
+        background-color: transparent;
+        border: none;
+        color: var(--bluegray-900);
+        font-size: $font-size-lg;
+        border-radius: 0;
+        margin-left: -1rem!important;
+        padding-left: 1.5rem!important;
+        //border-bottom: 1px solid transparent;
+        border: 2px solid $the-color;
+        border-radius: 22px;
+
+        &::placeholder {
+          color: var(--bluegray-400);
+        }
+
+        //&:not(:focus):hover {
+        //  border-bottom: 1px solid var(--blue-600);
+        //}
+        &:focus {
+          //border-bottom: 1px solid var(--blue-600);
+          box-shadow: none;
+        }
+      }
+    }
+
+    .user {
+      .la-user-circle {
+        font-size: 64px;
+      }
+
+      img {
+        width: 40px;
+      }
+
+      span {
+        font-size: 14px;
+        cursor: default;
+      }
+
+      .la-angle-down {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.menu-bar {
+  width: $left-side-width;
+  border-right: 3px solid $the-color;
+  background-color: white;
+
+  .tabview-custom {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+
+    .p-tabview-nav {
+      background-color: transparent !important;
+      border: none;
+
+      li {
+        flex: auto;
+
+        .system-menu {
+          padding: 10px 10px 5px 10px;
+          border-radius: 8px;
+          background-color: rgb(222, 222, 222);
+
+          img {
+            width: 32px;
+            height: 32px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          span {
+            font-size: 16px;
+            font-weight: bold;
+            color: rgb(178, 178, 178);
+          }
+
+          &.active {
+            background-color: $the-color;
+
+            span {
+              color: white;
+            }
+          }
+        }
+
+        a {
+          border: none;
+          box-shadow: none;
+        }
+      }
+
+      .p-tabview-nav-link {
+        background-color: transparent !important;
+        border-color: var(--bluegray-500) !important;
+
+        > div {
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
+      }
+
+      li.p-highlight .p-tabview-nav-link {
+        border-color: var(--primary-color) !important;
+      }
+    }
+  }
+
+  .p-tabview-panels {
+    background-color: transparent !important;
+    color: var(--surface-500) !important;
+    flex: auto;
+    display: flex;
+
+    .p-tabview-panel {
+      display: flex;
+      flex: auto;
+    }
+  }
+
+  .menu {
+    cursor: default;
+  }
+
+  .user-menu {
+    padding: 1rem;
+
+    i {
+      font-size: 24px;
+      color: var(--bluegray-500);
+    }
+
+    span {
+      color: var(--surface-500) !important;
+      font-size: 16px;
+      cursor: default;
+
+      &:hover {
+        color: var(--surface-300) !important;
+      }
+    }
+  }
+}
+
+i {
+  font-size: 24px;
+  color: var(--bluegray-500);
+}
+
+.level-1 {
+
+  .menu-icon {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+
+    &.main_menu_icon_monitoring {
+      background-image: url('../../assets/image/main_menu_icon_monitoring_active.png');
+    }
+
+    &.main_menu_icon_ai {
+      background-image: url('../../assets/image/main_menu_icon_ai_active.png');
+    }
+
+    &.main_menu_btn_icon_ai_model {
+      background-image: url('../../assets/image/main_menu_btn_icon_ai_model.png');
+    }
+
+    &.main_menu_btn_icon_collaboration {
+      background-image: url('../../assets/image/main_menu_btn_icon_collaboration.png');
+    }
+  }
+
+  > .title {
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    background-color: $the-color;
+
+    &.ai {
+      background-color: $second-color;
+    }
+
+    &.collaboration {
+      background-color: $the-color;
+    }
+
+    &:hover {
+      background-color: $second-color;
+    }
+
+    span {
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: 20px;
+    }
+  }
+
+  .tip {
+    width: 5px;
+    height: 5px;
+    background-color: $the-color;
+  }
+
+  .level-2 {
+    margin-left: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid lightgray;
+    padding-right: 10px;
+
+    span {
+      font-size: 14px;
+      color: var(--surface-800) !important;
+      flex: auto;
+
+      &.selected {
+        color: var(--surface-300) !important;
+      }
+
+      &:hover {
+        color: $the-color !important;
+      }
+    }
+
+    .level-3 {
+      margin-left: 20px;
+
+      > span {
+        font-size: 14px;
+        text-align: end;
+
+        &.selected {
+          color: var(--surface-300) !important;
+        }
+
+        &:hover {
+          color: $the-color !important;
+        }
+      }
+    }
+  }
+}
+
+.main {
+  background-color: rgb(249, 249, 249);
+  background-image: linear-gradient(to right, transparentize(black, 0.9), 5%, rgb(249, 249, 249));
+  display: flex;
+  flex-direction: column;
+
+  .top {
+    border-bottom: 2px solid rgb(147, 165, 175);// var(--bluegray-300);
+    padding: 9px 9px 10px 9px;
+    background-color: rgb(249, 249, 249);
+    background-image: linear-gradient(to right, transparentize(black, 0.9), 5%, rgb(249, 249, 249));
+
+    .p-breadcrumb {
+      background: transparent;
+      border: none;
+      color: var(--surface-900) !important;
+    }
+  }
+
+  .progressbar {
+    position: absolute;
+    width: 300px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    align-items: center;
+
+    .p-progressbar {
+      align-self: stretch;
+      background-color: var(--bluegray-300);
+    }
+  }
+
+  .unity-wrapper {
+    position: absolute;
+    .unity {
+    }
+  }
+
+  .router {
+    z-index: 2;
+    background-color: white;
+    align-items: flex-start;
+  }
+}

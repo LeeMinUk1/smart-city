@@ -1,0 +1,60 @@
+<div class="flex-column flex-auto gap-md">
+    <div class="flex-row title-bar">
+        <span>공지 사항</span>
+        <i class="las la-sync m-l-auto"></i>
+    </div>
+    <div class="flex-row search-bar gap-sm">
+        <span class="p-input-icon-left m-l-auto">
+            <i class="pi pi-search"/>
+            <InputText type="text" v-model="condition.keyword" placeholder="Search"/>
+        </span>
+    </div>
+    <DataTable ref="dataTable"
+               :value="list"
+               :totalRecords="totalRecords"
+               :loading="loading"
+               @page="onPage($event)"
+               :lazy="true"
+               :paginator="true"
+               :rows="condition.limit"
+               v-model:selection="selectedRow"
+               selectionMode="single"
+               dataKey="id"
+               @rowSelect="onRowSelect"
+               paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+               :rowsPerPageOptions="[10,20,50]"
+               responsiveLayout="scroll"
+               currentPageReportTemplate="{totalRecords} 개">
+        <Column field="number" header="No."></Column>
+        <Column field="title" header="제목"></Column>
+        <Column field="registered" header="등록일"></Column>
+        <Column field="readCount" header="조회"></Column>
+    </DataTable>
+</div>
+<Dialog header="공지사항" v-model:visible="displayDialog" :style="{width: '50vw'}" :modal="true">
+    <div class="flex-column gap-md">
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span>제목</span>
+            </div>
+            <div class="flex-column flex-auto">
+                <span>{{notice.title}}</span>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="flex-row gap-sm w-100">
+                <span>첨부 파일</span>
+            </div>
+            <a :href="'/api/notice/download/' + notice.id">
+                <span v-if="notice.attachmentName">{{notice.attachmentName}}</span>
+            </a>
+        </div>
+        <div class="flex-row">
+            <div class="flex-column flex-auto" v-html="notice.content">
+            </div>
+        </div>
+    </div>
+    <template #footer>
+        <Button label="닫기" icon="pi pi-times" @click="close" class="p-button-text"/>
+    </template>
+</Dialog>

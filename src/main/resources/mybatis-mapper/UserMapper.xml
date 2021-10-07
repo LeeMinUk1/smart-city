@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.ac.uos.smartcity.repository.UserMapper">
+
+    <insert id="add" parameterType="kr.ac.uos.smartcity.model.User">
+        INSERT INTO "User" (id, name, department, type, password, role, suspended, deleted, created)
+        VALUES (#{id}, #{name}, #{department}, #{type}, #{password}, 'USER', FALSE, FALSE, to_char(NOW()::DATE, 'yyyy-mm-dd'))
+    </insert>
+
+    <select id="exists" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM "User"
+        WHERE id=#{id}
+    </select>
+
+    <update id="update" parameterType="kr.ac.uos.smartcity.model.User">
+        UPDATE "User"
+        SET name=#{name},
+            department= #{department},
+            type=#{type},
+            password=#{password},
+            role=#{role}
+        WHERE id=#{id}
+    </update>
+
+    <update id="delete" parameterType="string">
+        UPDATE "User"
+        SET deleted=TRUE
+        WHERE id=#{id}
+    </update>
+
+    <update id="suspend" parameterType="string">
+        UPDATE "User"
+        SET suspended=TRUE
+        WHERE id=#{id}
+    </update>
+
+    <update id="unsuspend" parameterType="string">
+        UPDATE "User"
+        SET suspended=FALSE
+        WHERE id=#{id}
+    </update>
+
+    <sql id="listCondition">
+        FROM "User"
+        <where>
+            <if test="suspendedOrDeleted">AND (suspended=TRUE OR deleted=TRUE)</if>
+            <if test='type != "all"'>AND type = #{type}</if>
+            <if test='searchType.equals("all")'>
+                AND (UPPER(id) LIKE UPPER('%' || #{keyword} || '%') OR
+                UPPER(name) LIKE UPPER('%' || #{keyword} || '%') OR
+                UPPER(department) LIKE UPPER('%' || #{keyword} || '%'))
+            </if>
+            <if test='searchType.equals("id")'>
+                AND UPPER(id) LIKE UPPER('%' || #{keyword} || '%')
+            </if>
+            <if test='searchType.equals("name")'>
+                AND UPPER(name) LIKE UPPER('%' || #{keyword} || '%')
+            </if>
+            <if test='searchType.equals("department")'>
+                AND UPPER(department) LIKE UPPER('%' || #{keyword} || '%')
+            </if>
+            AND deleted=FALSE
+        </where>
+    </sql>
+
+    <select id="listCount" parameterType="kr.ac.uos.smartcity.model.UserListCondition" resultType="int">
+        SELECT COUNT(*)
+        <include refid="listCondition">
+            <property name="suspendedOrDeleted" value="suspendedOrDeleted"/>
+            <property name="type" value="type"/>
+            <property name="searchType" value="searchType"/>
+            <property name="keyword" value="keyword"/>
+        </include>
+    </select>
+
+    <select id="list" parameterType="kr.ac.uos.smartcity.model.UserListCondition" resultType="kr.ac.uos.smartcity.model.User">
+        SELECT *
+        <include refid="listCondition">
+            <property name="suspendedOrDeleted" value="suspendedOrDeleted"/>
+            <property name="type" value="type"/>
+            <property name="searchType" value="searchType"/>
+            <property name="keyword" value="keyword"/>
+        </include>
+        ORDER BY id
+        LIMIT #{limit} OFFSET CAST(#{offset} AS NUMERIC)
+    </select>
+
+    <select id="getUser" parameterType="string" resultType="kr.ac.uos.smartcity.model.User">
+        SELECT *
+        FROM "User"
+        WHERE id=#{id} AND deleted=FALSE AND suspended=FALSE
+    </select>
+
+</mapper>

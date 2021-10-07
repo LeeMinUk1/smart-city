@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.ac.uos.smartcity.repository.NoticeMapper">
+
+    <insert id="add" parameterType="kr.ac.uos.smartcity.model.Notice">
+        INSERT INTO "Notice" (title,
+                              registered,
+                              "readCount",
+                              content
+        <if test='attachmentUrl != ""'>
+                              ,"attachmentUrl"
+        </if>
+        <if test='attachmentName != ""'>
+                              ,"attachmentName"
+        </if>
+        ) VALUES (#{title},
+                  #{registered},
+                  0,
+                  #{content}
+        <if test='attachmentUrl != ""'>
+                  ,#{attachmentUrl}
+        </if>
+        <if test='attachmentName != ""'>
+                  ,#{attachmentName}
+        </if>
+        )
+    </insert>
+
+    <update id="update" parameterType="kr.ac.uos.smartcity.model.Notice">
+        UPDATE "Notice"
+        SET title=#{title},
+            registered=#{registered},
+            content=#{content}
+            <if test='attachmentUrl != ""'>
+                ,"attachmentUrl"=#{attachmentUrl}
+            </if>
+            <if test='attachmentName != ""'>
+                ,"attachmentName"=#{attachmentName}
+            </if>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM "User"
+        WHERE id=#{id}
+    </delete>
+
+    <sql id="listCondition">
+        FROM "Notice"
+        <where>
+            <if test='keyword != ""'>
+                AND (UPPER(title) LIKE UPPER('%' || #{keyword} || '%') OR
+                UPPER(content) LIKE UPPER('%' || #{keyword} || '%'))
+            </if>
+        </where>
+    </sql>
+
+    <select id="listCount" parameterType="kr.ac.uos.smartcity.model.NoticeListCondition" resultType="int">
+        SELECT COUNT(*)
+        <include refid="listCondition">
+            <property name="keyword" value="keyword"/>
+        </include>
+    </select>
+
+    <select id="list" parameterType="kr.ac.uos.smartcity.model.NoticeListCondition" resultType="kr.ac.uos.smartcity.model.Notice">
+        SELECT *
+        <include refid="listCondition">
+            <property name="keyword" value="keyword"/>
+        </include>
+        ORDER BY id DESC
+        LIMIT #{limit} OFFSET CAST(#{offset} AS NUMERIC)
+    </select>
+
+    <select id="get" parameterType="int" resultType="kr.ac.uos.smartcity.model.Notice">
+        SELECT *
+        FROM "Notice"
+        WHERE id=#{id}
+    </select>
+
+    <update id="updateReadCount" parameterType="int">
+        UPDATE "Notice"
+        SET "readCount"="readCount" + 1
+        WHERE id=#{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.ac.uos.smartcity.repository.QnaMapper">
+
+    <insert id="add" parameterType="kr.ac.uos.smartcity.model.Qna">
+        INSERT INTO "Qna" (title,
+                              registered,
+                              "readCount",
+                              content
+        <if test='attachmentUrl != ""'>
+                              ,"attachmentUrl"
+        </if>
+        <if test='attachmentName != ""'>
+                              ,"attachmentName"
+        </if>
+        <if test='receiverId != ""'>
+            ,"receiverId"
+        </if>
+        ) VALUES (#{title},
+                  #{registered},
+                  0,
+                  #{content}
+        <if test='attachmentUrl != ""'>
+                  ,#{attachmentUrl}
+        </if>
+        <if test='attachmentName != ""'>
+                  ,#{attachmentName}
+        </if>
+        <if test='receiverId != ""'>
+            ,#{receiverId}
+        </if>
+        )
+    </insert>
+
+    <update id="update" parameterType="kr.ac.uos.smartcity.model.Qna">
+        UPDATE "Qna"
+        SET title=#{title},
+            registered=#{registered},
+            content=#{content}
+            <if test='attachmentUrl != ""'>
+                ,"attachmentUrl"=#{attachmentUrl}
+            </if>
+            <if test='attachmentName != ""'>
+                ,"attachmentName"=#{attachmentName}
+            </if>
+            <if test='receiverId != ""'>
+                ,"receiverId"=#{receiverId}
+            </if>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM "User"
+        WHERE id=#{id}
+    </delete>
+
+    <sql id="listCondition">
+        FROM "Qna"
+        <where>
+            <if test='keyword != ""'>
+                AND (UPPER(title) LIKE UPPER('%' || #{keyword} || '%') OR
+                UPPER(content) LIKE UPPER('%' || #{keyword} || '%'))
+            </if>
+        </where>
+    </sql>
+
+    <select id="listCount" parameterType="kr.ac.uos.smartcity.model.QnaListCondition" resultType="int">
+        SELECT COUNT(*)
+        <include refid="listCondition">
+            <property name="keyword" value="keyword"/>
+        </include>
+    </select>
+
+    <select id="list" parameterType="kr.ac.uos.smartcity.model.QnaListCondition" resultType="kr.ac.uos.smartcity.model.Qna">
+        SELECT *
+        <include refid="listCondition">
+            <property name="keyword" value="keyword"/>
+        </include>
+        ORDER BY id DESC
+        LIMIT #{limit} OFFSET CAST(#{offset} AS NUMERIC)
+    </select>
+
+    <select id="get" parameterType="int" resultType="kr.ac.uos.smartcity.model.Qna">
+        SELECT *
+        FROM "Qna"
+        WHERE id=#{id}
+    </select>
+
+    <update id="updateReadCount" parameterType="int">
+        UPDATE "Qna"
+        SET "readCount"="readCount" + 1
+        WHERE id=#{id}
+    </update>
+
+    <select id="unreadQnaCount" parameterType="string" resultType="int">
+        SELECT
+            (SELECT COUNT(*) FROM "Qna") - (SELECT COUNT(*) FROM "QnaUser")
+        AS count
+    </select>
+
+    <select id="getReadQna" parameterType="kr.ac.uos.smartcity.model.QnaUser" resultType="int">
+        SELECT COUNT(*)
+        FROM "QnaUser"
+        WHERE "userId"=#{userId} AND "qnaId"=#{qnaId}
+    </select>
+
+    <insert id="addReadQna" parameterType="kr.ac.uos.smartcity.model.QnaUser">
+        INSERT INTO "QnaUser" ("userId", "qnaId")
+        VALUES (#{userId}, #{qnaId})
+    </insert>
+
+</mapper>

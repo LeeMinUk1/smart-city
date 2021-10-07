@@ -1,0 +1,134 @@
+<div class="flex-column flex-auto">
+    <div class="flex-row header">
+        <div class="flex-row logo gap-md p-sm m-r-auto" @click="changeToUserMenu">
+            <img src="../../assets/image/main_top_logo.png"/>
+        </div>
+        <div class="flex-row top-bar gap-md">
+            <Dropdown v-model="selectedDong" :options="dongList" optionLabel="label" option-value="value"
+                      placeholder="행정 동"/>
+            <div class="flex-row search m-r-auto">
+                <InputText placeholder="건물명이나 주소를 입력하세요"/>
+            </div>
+            <div class="flex-row gap-xl">
+                <i class="las la-star" v-badge.warning="2"/>
+                <i class="las la-history" v-badge.warning="2"/>
+                <div class="flex-row gap-sm user" @click="toggleUserMenu">
+                    <img src="../../assets/user.png"/>
+                    <span>관리자</span>
+                    <i class="las la-angle-down"></i>
+                    <TieredMenu ref="userMenu" :model="userMenuItems" :popup="true"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-row flex-auto p-ai-stretch">
+        <div class="flex-column flex-none gap-md menu-bar">
+            <TabView class="tabview-custom" ref="tabview4">
+                <TabPanel>
+                    <template #header>
+                        <div class="flex-column system-menu active">
+                            <img src="../../assets/image/main_menu_btn_icon_bems_active.png"/>
+                            <span>BEMS</span>
+                        </div>
+                    </template>
+                    <div class="menu flex-column flex-auto gap-lg">
+                        <div class="level-1 flex-column gap-md" :class="{'flex-auto': menuLevel1.separator}" v-for="menuLevel1 in rootMenu.children"
+                             :key="menuLevel1">
+                            <div v-if="menuLevel1.separator"></div>
+                            <template v-else>
+                                <div class="flex-row gap-sm title" @click="expandMenu(menuLevel1, rootMenu)">
+                                    <div class="menu-icon" :class="menuLevel1.icon"/>
+                                    <span>{{ menuLevel1.label }}</span>
+                                    <Badge :value="unreadQnaCount" size="large" severity="warning" v-if="menuLevel1.label === '협업 시스템' && unreadQnaCount !== 0"></Badge>
+                                </div>
+                                <template v-if="menuLevel1.children && menuLevel1.expanded">
+                                    <div class="level-2 flex-column gap-md" v-for="menuLevel2 in menuLevel1.children"
+                                         :key="menuLevel2">
+                                        <div class="flex-row gap-md">
+                                            <div class="tip"></div>
+                                            <span @click="menuLevel2.children ? expandMenu(menuLevel2, menuLevel1) : openView(menuLevel2)"
+                                                  :class="{selected: menuLevel2.selected}">
+                                                {{menuLevel2.label}}
+                                            </span>
+                                            <i v-if="menuLevel2.children" class="pi pi-angle-down p-as-end" style="fontSize: 0.8rem"></i>
+                                        </div>
+                                        <template v-if="menuLevel2.children && menuLevel2.expanded">
+                                            <div class="level-3 flex-column" v-for="menuLevel3 in menuLevel2.children"
+                                                 :key="menuLevel3">
+                                                <span @click="openView(menuLevel3)"
+                                                      :class="{selected: menuLevel3.selected}">{{ menuLevel3.label }}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+<!--                        <div class="m-t-auto flex-column gap-md">-->
+<!--                            <div class="level-1 flex-column gap-md">-->
+<!--                                <div class="flex-row gap-sm title ai">-->
+<!--                                    <img src="../../assets/image/main_menu_btn_icon_ai_model.png"/>-->
+<!--                                    <span>A.I. 모델 설계</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="level-1 flex-column gap-md m-t-auto">-->
+<!--                                <div class="flex-row gap-sm title collaboration" @click="collaborationMenu = !collaborationMenu">-->
+<!--                                    <img src="../../assets/image/main_menu_btn_icon_collaboration.png"/>-->
+<!--                                    <span>협업 시스템</span>-->
+<!--                                </div>-->
+<!--                                <template v-if="collaborationMenu">-->
+<!--                                    <div class="level-2 flex-column gap-md">-->
+<!--                                        <span @click="openView(noticeMenu)">공지사항</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="level-2 flex-column gap-md">-->
+<!--                                        <span>화상회의(줌링크)</span>-->
+<!--                                    </div>-->
+<!--                                </template>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                </TabPanel>
+                <TabPanel :disabled="true">
+                    <template #header>
+                        <div class="flex-column system-menu">
+                            <img src="../../assets/image/main_menu_btn_icon_hems.png"/>
+                            <span>HEMS</span>
+                        </div>
+                    </template>
+                    <div></div>
+                </TabPanel>
+                <TabPanel :disabled="true">
+                    <template #header>
+                        <div class="flex-column system-menu">
+                            <img src="../../assets/image/main_menu_btn_icon_fems.png"/>
+                            <span>FEMS</span>
+                        </div>
+                    </template>
+                    <div></div>
+                </TabPanel>
+            </TabView>
+        </div>
+        <div class="flex-column flex-auto gap-md main">
+            <!-- Unity -->
+            <div class="flex-column gap-md unity-wrapper">
+                <div class="flex-row gap-md top">
+                    <Breadcrumb :home="home" :model="breadcrumb" class="m-r-auto"/>
+                    <Button type="button" label="상세 기능" @click="toggleDetailMenu"/>
+                    <TieredMenu ref="detailMenu" :model="detailMenuItems" :popup="true"/>
+                    <Button icon="pi pi-external-link" class="p-button-rounded p-button-primary" @click="fullScreen"/>
+                </div>
+                <div class="unity">
+                    <div class="progressbar flex-column gap-sm" v-if="!unityLoaded">
+                        <ProgressBar :value="unityLoadingProgress" />
+                        <span>Loading...</span>
+                    </div>
+                    <canvas else ref="canvas" width="1600" height="900" style="width: 1600px; height: 860px; margin: 0px 0px 0px 110px;" ></canvas>
+                                    <!--<canvas ref="canvas" else></canvas>-->
+                </div>
+            </div>
+            <!-- 나머지 기능 -->
+            <div class="flex-row flex-auto router" v-if="currentView && currentView.to">
+                <router-view/>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+@import './_layout.scss';
+@import './_flex.scss';
+@import './_font.scss';
+@import './_color.scss';
+
+html {
+  font-size: 14px;
+}
+
+.p-component {
+  font-family: $font-family !important;
+}
+
+$title-bar-background-color: var(--bluegray-300);
+
+.title-bar {
+  background-color: $title-bar-background-color;
+  padding: $spacing-md;
+  color: var(--bluegray-900);
+  font-size: $font-size-lg;
+}
+
+.search-bar, .option-bar {
+  margin-left: $spacing-md;
+  margin-right: $spacing-md;
+}
+
+.mandatory-star {
+  color: var(--pink-500);
+}
+
+.dialog-invisible-reject {
+  display: none !important;
+}
+
+.p-calendar .p-inputtext {
+  width: 100px !important;
+}

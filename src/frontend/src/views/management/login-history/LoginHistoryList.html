@@ -1,0 +1,38 @@
+<div class="flex-column flex-auto gap-md">
+    <div class="flex-row title-bar">
+        <span class="m-r-auto">로그인 이력</span>
+        <Button @click="load" icon="pi pi-refresh" class="p-button-lg p-button-rounded p-button-secondary p-button-text" />
+    </div>
+    <div class="flex-row search-bar gap-md">
+        <div class="flex-row search-bar gap-sm m-l-auto">
+            <Calendar v-model="beginDate" dateFormat="yy-mm-dd" :showIcon="true" />
+            <span>~</span>
+            <Calendar v-model="endDate" dateFormat="yy-mm-dd" :showIcon="true" />
+        </div>
+        <Dropdown v-model="condition.searchType" :options="keywordTypeList" optionLabel="label" option-value="value"/>
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"/>
+            <InputText type="text" v-model="condition.keyword" placeholder="Search"/>
+        </span>
+        <Button label="검색" icon="pi pi-search" @click="load"/>
+    </div>
+    <DataTable ref="dataTable"
+               :value="list"
+               :totalRecords="totalRecords"
+               :loading="loading"
+               @page="onPage($event)"
+               :lazy="true"
+               :paginator="true"
+               :rows="condition.limit"
+               paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+               :rowsPerPageOptions="[10,20,50]"
+               responsiveLayout="scroll"
+               currentPageReportTemplate="{totalRecords} 개">
+        <Column field="number" header="No."></Column>
+        <Column field="id" header="사용자 ID"></Column>
+        <Column field="name" header="이름"></Column>
+        <Column field="department" header="소속"></Column>
+        <Column field="ip" header="접속 IP"></Column>
+        <Column field="loggedIn" header="접속일"></Column>
+    </DataTable>
+</div>

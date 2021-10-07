@@ -1,0 +1,82 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 100;
+  src: url('~@/assets/fonts/NotoSansKR-Thin.woff2') format('woff2'), url('~@/assets/fonts/NotoSansKR-Thin.woff') format('woff'), url('~@/assets/fonts/NotoSansKR-Thin.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 300;
+  src: url('~@/assets/fonts/NotoSansKR-Light.woff2') format('woff2'), url('~@/assets/fonts/NotoSansKR-Light.woff') format('woff'), url('~@/assets/fonts/NotoSansKR-Light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 400;
+  src: url('~@/assets/fonts/NotoSansKR-Regular.woff2') format('woff2'), url('~@/assets/fonts/NotoSansKR-Regular.woff') format('woff'), url('~@/assets/fonts/NotoSansKR-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 500;
+  src: url('~@/assets/fonts/NotoSansKR-Medium.woff2') format('woff2'), url('~@/assets/fonts/NotoSansKR-Medium.woff') format('woff'), url('~@/assets/fonts/NotoSansKR-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 700;
+  src: url('~@/assets/fonts/NotoSansKR-Bold.woff2') format('woff2'), url('~@/assets/fonts/NotoSansKR-Bold.woff') format('woff'), url('~@/assets/fonts/NotoSansKR-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 900;
+  src: url('~@/assets/fonts/NotoSansKR-Black.woff2') format('woff2'), url('~@/assets/fonts/NotoSansKR-Black.woff') format('woff'), url('~@/assets/fonts/NotoSansKR-Black.otf') format('opentype');
+}
+
+$font-family: 'Noto Sans KR', Avenir, Helvetica, Arial, sans-serif;
+$webkit-font-smoothing: antialiased;
+$moz-osx-font-smoothing: grayscale;
+
+$foreground-color: #2c3e50;
+
+$font-size-sm: 0.75rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-xxl: 2rem;
+
+.font-size-sm {
+  font-size: $font-size-sm;
+}
+
+.font-size-md {
+  font-size: $font-size-md;
+}
+
+.font-size-lg {
+  font-size: $font-size-lg;
+}
+
+.font-size-xl {
+  font-size: $font-size-xl;
+}
+
+.font-size-xxl {
+  font-size: $font-size-xxl;
+}
+
+body {
+  font-family: 'Noto Sans KR';
+
+  .p-inputtext {
+    font-family: 'Noto Sans KR'; }
+}
